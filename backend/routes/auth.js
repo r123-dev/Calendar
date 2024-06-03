@@ -84,7 +84,7 @@ router.get('/google/callback', async (req, res) => {
     };
 
     const searchParams = new URLSearchParams(userData);
-    const frontendUrl = `http://localhost:3000/calender?${searchParams.toString()}`;
+    const frontendUrl = `https://calendar-nu-green.vercel.app/calender?${searchParams.toString()}`;
 
     // Redirect to the frontend with user data
     res.redirect(frontendUrl);

@@ -21,7 +21,7 @@ const App = () => {
     const fetchEvents = async () => {
       try {
         if (isAuthenticated) {
-          const response = await axios.get('http://localhost:8000/auth/events', {
+          const response = await axios.get('https://calendar-q9id.onrender.com/auth/events', {
             params: { user: JSON.stringify(user) },
             headers: {
               'Content-Type': 'application/json',

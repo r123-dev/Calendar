@@ -3,7 +3,7 @@ import { Box, Button, Center, Heading, Text, VStack } from "@chakra-ui/react";
 
 const Login = () => {
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:8000/auth/google";
+    window.location.href = "https://calendar-q9id.onrender.com/auth/google";
   };
 
   return (

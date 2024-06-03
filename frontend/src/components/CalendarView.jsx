@@ -39,7 +39,6 @@ const CalendarView = () => {
     // Extract query parameters from the URL
     const searchParams = new URLSearchParams(location.search);
     const userData = Object.fromEntries(searchParams.entries());
-   
 
     // Dispatch action to set user data in Redux store
     dispatch(setUser(userData));
@@ -51,7 +50,7 @@ const CalendarView = () => {
       if (user && user._id) {
         try {
           const response = await axios.get(
-            "https://evallo-backend.onrender.com/auth/events",
+            "https://calendar-q9id.onrender.com/auth/events",
             {
               params: { user: JSON.stringify(user) },
               headers: {
@@ -85,9 +84,9 @@ const CalendarView = () => {
   const simplifiedEvents = events?.map((event) => {
     const startDateTime = new Date(event.start.dateTime);
     const endDateTime = new Date(event.end.dateTime);
-  
+
     const duration = (endDateTime - startDateTime) / (1000 * 60); // duration in minutes
-  
+
     return {
       title: event.summary,
       description: event.description,
@@ -100,7 +99,7 @@ const CalendarView = () => {
         sessionNotes: event.sessionNotes,
         duration: duration,
       },
-    }
+    };
   });
 
   const [tooltipContent, setTooltipContent] = useState("");
@@ -154,7 +153,6 @@ const CalendarView = () => {
     );
   };
 
- 
   const handleDateClick = (info) => {
     alert("Date clicked: " + info.dateStr);
   };
@@ -177,7 +175,7 @@ const CalendarView = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-   
+
     const {
       summary,
       description,
@@ -188,17 +186,14 @@ const CalendarView = () => {
       duration,
       sessionNotes,
     } = formData;
-  
 
-  
-  
     const eventObject = {
       summary,
       description,
-      attendees: attendees.split(",").map(email => ({
+      attendees: attendees.split(",").map((email) => ({
         email: email.trim(),
-        responseStatus: 'accepted', // Set default value
-        self: true // Set default value
+        responseStatus: "accepted", // Set default value
+        self: true, // Set default value
       })), // Convert comma-separated string to an array
       date,
       start: { dateTime: `${date}T${start}`, timeZone: "Asia/Kolkata" }, // Combine date and time for start
@@ -212,7 +207,7 @@ const CalendarView = () => {
     if (createEvent === false) {
       try {
         const response = await axios.patch(
-          `https://evallo-backend.onrender.com/auth/events/${selectedEventId}`,
+          `https://calendar-q9id.onrender.com/auth/events/${selectedEventId}`,
           {
             user,
             eventObject: eventObject,
@@ -240,13 +235,16 @@ const CalendarView = () => {
       }
     } else {
       try {
-        const response = await fetch("https://evallo-backend.onrender.com/auth/events", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ user, eventObject }),
-        });
+        const response = await fetch(
+          "https://calendar-q9id.onrender.com/auth/events",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ user, eventObject }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to create event");
@@ -289,7 +287,7 @@ const CalendarView = () => {
     const eventOne = events.find((event) => event.id === eventId);
     setSelectedEventId(eventId);
     setCreateEventId(false);
-    
+
     if (eventOne) {
       // Extract date and time for start and end
       const { date: startDate, time: startTime } = splitDateTime(
@@ -301,8 +299,8 @@ const CalendarView = () => {
 
       // Join attendees if it's an array of strings
       const attendeesString = Array.isArray(eventOne.attendees)
-      ? eventOne.attendees.map(att => att.email).join(",")
-      : "";
+        ? eventOne.attendees.map((att) => att.email).join(",")
+        : "";
 
       setFormData({
         summary: eventOne.summary,
@@ -314,21 +312,22 @@ const CalendarView = () => {
         duration: eventOne.duration,
         sessionNotes: eventOne.sessionNotes,
       });
-
-      
     }
   };
 
   const handleDeleteEvent = async () => {
     try {
       console.log("selectedEventId:", selectedEventId);
-      await fetch(`https://evallo-backend.onrender.com/auth/events/${selectedEventId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user }),
-      });
+      await fetch(
+        `https://calendar-q9id.onrender.com/auth/events/${selectedEventId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ user }),
+        }
+      );
 
       // Update events in Redux store
       const updatedEvents = events.filter(
@@ -356,13 +355,13 @@ const CalendarView = () => {
 
   const handleLogout = async () => {
     dispatch(logoutUser());
-    nav('/')
+    nav("/");
   };
 
   return (
     <Box p={4} width="100%">
-       <Navbar user={user} onLogout={handleLogout} />
-      <br/>
+      <Navbar user={user} onLogout={handleLogout} />
+      <br />
       <Button
         onClick={() => {
           setSelectedEventId("");
@@ -383,7 +382,6 @@ const CalendarView = () => {
       >
         Create Event
       </Button>{" "}
-
       <FullCalendar
         plugins={[dayGridPlugin]}
         initialView="dayGridMonth"
